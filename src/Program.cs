@@ -1,4 +1,6 @@
-﻿namespace DotnetDocker;
+﻿using System.IO.Ports;
+
+namespace DotnetDocker;
 
 class Program
 {
@@ -6,12 +8,26 @@ class Program
     {
         Console.WriteLine("Hello Docker");
 
+        var port = new SerialPort("/dev/ttyUSB0");
+        var msg = "";
+
+        try
+        {
+            port.Open();
+        }
+        catch (System.Exception ex)
+        {
+           Console.WriteLine(ex.Message);
+        }
+
         await Task.Run(async () =>
         {
             int i=0;
             while (true)
             {
-                Console.WriteLine($"Hello from docker {i++}");
+                msg = $"Hello from docker {i++}";
+                Console.WriteLine(msg);
+                port.WriteLine(msg);
                 await Task.Delay(1000);
             }
         });
